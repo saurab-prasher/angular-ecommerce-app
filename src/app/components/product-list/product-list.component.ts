@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { Product } from '../common/product';
-import { ProductService } from '../services/product.service';
+
 import { ActivatedRoute } from '@angular/router';
+import { Product } from '../../common/product';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-list',
@@ -11,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 export class ProductListComponent {
   products: Product[] = [];
   currentCategoryId: number = 1;
+  searchMode: boolean = false;
 
   constructor(
     private productService: ProductService,
@@ -24,6 +26,16 @@ export class ProductListComponent {
   }
 
   listProducts() {
+    this.searchMode = this.route.snapshot.paramMap.has('keyword');
+
+    if (this.searchMode) {
+      this.handleSearchProducts();
+    } else {
+      this.handleListProducts();
+    }
+  }
+
+  handleListProducts() {
     // use the activated route - State of route at this given moment in time - Map of all the route parameters: boolean
     const hasCategoryId: boolean = this.route.snapshot.paramMap.has('id');
 
@@ -35,6 +47,15 @@ export class ProductListComponent {
     }
     this.productService
       .getProductList(this.currentCategoryId)
+      .subscribe((data) => (this.products = data));
+  }
+
+  handleSearchProducts() {
+    const theKeyword: string = this.route.snapshot.paramMap.get('keyword')!;
+
+    // now search for products using keyword
+    this.productService
+      .searchProducts(theKeyword)
       .subscribe((data) => (this.products = data));
   }
 }

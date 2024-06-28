@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../common/product';
 import { ProductService } from '../../services/product.service';
+import { CartItem } from '../../common/cart-item';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-list',
@@ -22,7 +24,8 @@ export class ProductListComponent {
 
   constructor(
     private productService: ProductService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cartService: CartService
   ) {}
 
   ngOnInit() {
@@ -58,7 +61,8 @@ export class ProductListComponent {
 
     // if we have a different category id that previous
     // then set the thePageNumber back to 1
-    if (this.previousCategoryId === this.currentCategoryId) {
+
+    if (this.previousCategoryId != this.currentCategoryId) {
       this.thePageNumber = 1;
     }
 
@@ -72,6 +76,7 @@ export class ProductListComponent {
       )
       .subscribe((data) => {
         this.products = data._embedded.products;
+
         this.thePageNumber = data.page.number + 1;
         this.thePageSize = data.page.size;
         this.theTotalElements = data.page.totalElements;
@@ -85,5 +90,11 @@ export class ProductListComponent {
     this.productService
       .searchProducts(theKeyword)
       .subscribe((data) => (this.products = data));
+  }
+
+  addToCart(theProduct: Product) {
+    const theCartItem = new CartItem(theProduct);
+
+    this.cartService.addToCart(theCartItem);
   }
 }

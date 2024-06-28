@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ProductListComponent } from './components/product-list/product-list.component';
+
 import { HttpClientModule } from '@angular/common/http';
 import { ProductService } from './services/product.service';
 
@@ -12,11 +12,14 @@ import { ProductCategoryMenuComponent } from './components/product-category-menu
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ProductListComponent } from './components/product-list/product-list.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
-
 // define routes from most specific to generic routes
 const routes: Routes = [
+  { path: 'cart-details', component: CartDetailsComponent },
   { path: 'products/:id', component: ProductDetailsComponent },
+
   { path: 'search/:keyword', component: ProductListComponent },
   { path: 'category/:id', component: ProductListComponent },
   { path: 'category', component: ProductListComponent },
@@ -33,6 +36,7 @@ const routes: Routes = [
     SearchComponent,
     ProductDetailsComponent,
     CartStatusComponent,
+    CartDetailsComponent,
   ],
   imports: [
     BrowserModule,

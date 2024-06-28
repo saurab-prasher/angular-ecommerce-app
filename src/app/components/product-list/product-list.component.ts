@@ -12,7 +12,13 @@ import { ProductService } from '../../services/product.service';
 export class ProductListComponent {
   products: Product[] = [];
   currentCategoryId: number = 1;
+  previousCategoryId: number = 1;
   searchMode: boolean = false;
+
+  // new properties for pagination
+  thePageNumber: number = 1;
+  thePageSize: number = 10;
+  theTotalElements: number = 0;
 
   constructor(
     private productService: ProductService,
@@ -45,9 +51,31 @@ export class ProductListComponent {
     } else {
       this.currentCategoryId = 1;
     }
+
+    // Check if we have a different category than previous
+    // Note: Angular will reuse a component if it is currently being viewed
+    //
+
+    // if we have a different category id that previous
+    // then set the thePageNumber back to 1
+    if (this.previousCategoryId === this.currentCategoryId) {
+      this.thePageNumber = 1;
+    }
+
+    this.previousCategoryId = this.currentCategoryId;
+
     this.productService
-      .getProductList(this.currentCategoryId)
-      .subscribe((data) => (this.products = data));
+      .getProductListPaginate(
+        this.thePageNumber - 1,
+        this.thePageSize,
+        this.currentCategoryId
+      )
+      .subscribe((data) => {
+        this.products = data._embedded.products;
+        this.thePageNumber = data.page.number + 1;
+        this.thePageSize = data.page.size;
+        this.theTotalElements = data.page.totalElements;
+      });
   }
 
   handleSearchProducts() {

@@ -35,4 +35,15 @@ export class CartDetailsComponent {
     // compute cart totals and update the UI
     this.cartService.computeCartTotals();
   }
+  incrementQuantity(theCartItem: CartItem) {
+    this.cartService.addToCart(theCartItem);
+  }
+
+  decrementQuantity(theCartItem: CartItem) {
+    this.cartService.decrementQuantity(theCartItem);
+  }
+
+  remove(cartItem: CartItem) {
+    this.cartService.remove(cartItem);
+  }
 }
